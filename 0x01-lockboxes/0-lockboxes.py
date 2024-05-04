@@ -11,7 +11,6 @@ def canUnlockAll(boxes):
         if not item:
             continue
         for key in item:
-            print(key)
             if (key < len(boxes) and key not in box and key != id):
                 box.append(key)
     if len(box) == len(boxes):
