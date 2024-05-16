@@ -1,51 +1,48 @@
 #!/usr/bin/python3
-"""Log parsing"""
+""" . Log parsing """
 import sys
-from operator import itemgetter
+import datetime
+from collections import defaultdict
 
 
-def valide_format(log):
-    """Check if the log has a valid format"""
+def valid_format(log):
+    """ Check if the log format is valid """
     return len(log.split()) >= 7
 
 
-def parser(log):
-    """Parse the log and extract status code and file size"""
-    return log.split()[-2], int(log.split()[-1])
+def parse_log(log):
+    """ Parse the log and extract status code and file size """
+    parts = log.split()
+    status_code = parts[-2]
+    file_size = int(parts[-1])
+    return status_code, file_size
 
 
-def valide_code(code):
-    """Check if the status code is valid"""
-    codes = {"200", "301", "400", "401", "403", "404", "405", "500"}
-    return code in codes
-
-
-def log_print(file_size, codes):
-    """Print the statistics"""
-    sor = sorted(codes.items(), key=itemgetter(0))
-    print('File size: {}'.format(file_size))
-    for code in sor:
-        key = code[0]
-        value = code[1]
-        print("{}: {}".format(key, value))
+def print_stats(file_size, codes_count):
+    """ Print the statistics """
+    print(f"File size: {file_size}")
+    for code, count in sorted(codes_count.items()):
+        print(f"{code}: {count}")
 
 
 if __name__ == "__main__":
-    """Read logs from stdin"""
-    codes_count = {}
-    size = 0
-    logs = 0
+    """ Reads logs from stdin """
+    codes_count = defaultdict(int)
+    file_size = 0
+    log_count = 0
 
     try:
         for log in sys.stdin:
-            logs += 1
-            if not valide_format(log):
+            log_count += 1
+
+            if not valid_format(log):
                 continue
-            codes, file_size = parser(log)
-            size += file_size
-            if valide_code(codes):
-                codes_count[codes] = codes_count.get(codes, 0) + 1
-            if logs % 10 == 0:
-                log_print(size, codes_count)
+
+            status_code, size = parse_log(log)
+            file_size += size
+            codes_count[status_code] += 1
+
+            if log_count % 10 == 0:
+                print_stats(file_size, codes_count)
     except KeyboardInterrupt:
-        log_print(size, codes_count)
+        print_stats(file_size, codes_count)
