@@ -1,35 +1,29 @@
 #!/usr/bin/python3
-""" . Log parsing """
+"""Log parsing"""
 import sys
 from operator import itemgetter
 
 
 def valide_format(log):
-    """ is it a valide code """
-    res = True
-    if len(log.split()) < 7:
-        res = False
-    return res
+    """Check if the log has a valid format"""
+    return len(log.split()) >= 7
 
 
 def parser(log):
-    """ a parser log into """
+    """Parse the log and extract status code and file size"""
     return log.split()[-2], int(log.split()[-1])
 
 
 def valide_code(code):
-    """ check my code """
-    codes = ["200", "301", "400", "401", "403", "404", "405", "500"]
-    res = False
-    if code in codes:
-        res = True
-    return res
+    """Check if the status code is valid"""
+    codes = {"200", "301", "400", "401", "403", "404", "405", "500"}
+    return code in codes
 
 
-def log_print(file_size, codes) -> None:
-    """ prints out log """
+def log_print(file_size, codes):
+    """Print the statistics"""
     sor = sorted(codes.items(), key=itemgetter(0))
-    print('File size:{}'.format(file_size))
+    print('File size: {}'.format(file_size))
     for code in sor:
         key = code[0]
         value = code[1]
@@ -37,25 +31,21 @@ def log_print(file_size, codes) -> None:
 
 
 if __name__ == "__main__":
-    """ Reads logs from std """
+    """Read logs from stdin"""
     codes_count = {}
     size = 0
     logs = 0
 
     try:
         for log in sys.stdin:
-            logs = logs + 1
-
+            logs += 1
             if not valide_format(log):
                 continue
             codes, file_size = parser(log)
-            size = size + file_size
-        if valide_code(codes):
-            value = {codes:
-                     codes_count.get(codes, 0) + 1}
-            codes_count.update(value)
-            if not logs % 10:
+            size += file_size
+            if valide_code(codes):
+                codes_count[codes] = codes_count.get(codes, 0) + 1
+            if logs % 10 == 0:
                 log_print(size, codes_count)
     except KeyboardInterrupt:
         log_print(size, codes_count)
-    log_print(size, codes_count)
