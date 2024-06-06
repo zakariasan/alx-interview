@@ -1,22 +1,45 @@
 #!/usr/bin/node
 
-const request = require("request");
-const name = process.argv[2];
-const link = `https://swapi-api.hbtn.io/api/films/${name}`;
+const request = require('request');
+const filmId = process.argv[2];
+const url = `https://swapi-api.hbtn.io/api/films/${filmId}`;
 
-request(link, async (err, res, body) => {
+request(url, (err, response, body) => {
   if (err) {
-    console.log(err);
+    console.error(err);
+    return;
   }
-  for (const charId of JSON.parse(body).characters) {
-    await new Promise((resolve, reject) => {
-      request(charId, (err, response, body) => {
-        if (err) {
-          reject(err);
-        }
-        console.log(JSON.parse(body).name);
-        resolve();
-      });
+
+  const filmData = JSON.parse(body);
+  const characterUrls = filmData.characters;
+
+  // Function to fetch and print character names
+  function fetchCharacter(characterUrl, callback) {
+    request(characterUrl, (err, response, body) => {
+      if (err) {
+        callback(err);
+        return;
+      }
+      const characterData = JSON.parse(body);
+      console.log(characterData.name);
+      callback(null);
     });
   }
+
+  // Using a recursive function to ensure order
+  function fetchCharactersInOrder(index) {
+    if (index >= characterUrls.length) {
+      return;
+    }
+    fetchCharacter(characterUrls[index], (err) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      fetchCharactersInOrder(index + 1);
+    });
+  }
+
+  // Start fetching characters from index 0
+  fetchCharactersInOrder(0);
 });
