@@ -13,7 +13,7 @@ request(url, (err, response, body) => {
   const filmData = JSON.parse(body);
   const characterUrls = filmData.characters;
 
-  function fetchCharacter(characterUrl, callback) {
+  function fetchCharacter (characterUrl, callback) {
     request(characterUrl, (err, _res, body) => {
       if (err) {
         callback(err);
@@ -25,7 +25,7 @@ request(url, (err, response, body) => {
     });
   }
 
-  function fetchCharactersInOrder(index) {
+  function fetchCharactersInOrder (index) {
     if (index >= characterUrls.length) {
       return;
     }
