@@ -4,49 +4,54 @@ In a text file, there is a single character H. Your text editor can execute
 """
 
 
-def isWinner(x, nums):
-    def sieve(n):
-        """ Returns a list of prime numbers up to n using the Sieve of Eratosthenes """
-        is_prime = [True] * (n + 1)
-        p = 2
-        while (p * p <= n):
-            if (is_prime[p] == True):
-                for i in range(p * p, n + 1, p):
-                    is_prime[i] = False
-            p += 1
-        primes = [p for p in range(2, n + 1) if is_prime[p]]
-        return primes
-
-    if not nums or x < 1:
-        return None
-
-    max_num = max(nums)
-    primes = sieve(max_num)
-
+def determine_winner(game_rounds, numbers):
+    """Determine the winner of the prime game."""
     maria_wins = 0
     ben_wins = 0
 
-    for n in nums:
-        primes_count = 0
-        for prime in primes:
-            if prime > n:
-                break
-            primes_count += 1
+    for number in numbers:
+        rounds_list = list(range(1, number + 1))
+        primes_list = get_primes_in_range(1, number)
 
-        # Determine winner
-        if primes_count % 2 == 0:
+        if not primes_list:
             ben_wins += 1
-        else:
-            maria_wins += 1
+            continue
+
+        maria_turn = True
+
+        while True:
+            if not primes_list:
+                if maria_turn:
+                    ben_wins += 1
+                else:
+                    maria_wins += 1
+                break
+
+            smallest_prime = primes_list.pop(0)
+            rounds_list.remove(smallest_prime)
+
+            rounds_list = [n for n in rounds_list if n % smallest_prime != 0]
+
+            maria_turn = not maria_turn
 
     if maria_wins > ben_wins:
-        return "Maria"
-    elif ben_wins > maria_wins:
-        return "Ben"
+        return "Winner: Maria"
+    elif maria_wins < ben_wins:
+        return "Winner: Ben"
     else:
         return None
 
 
-# Example usage
-if __name__ == "__main__":
-    print("Winner: {}".format(isWinner(5, [2, 5, 1, 4, 3])))
+def is_prime(n):
+    """Returns True if n is prime, else False."""
+    if n < 2:
+        return False
+    for i in range(2, int(n ** 0.5) + 1):
+        if n % i == 0:
+            return False
+    return True
+
+
+def get_primes_in_range(start, end):
+    """Returns a list of prime numbers between start and end (inclusive)."""
+    return [n for n in range(start, end + 1) if is_prime(n)]
