@@ -4,7 +4,7 @@ In a text file, there is a single character H. Your text editor can execute
 """
 
 
-def is_winner(x, nums):
+def isWinner(x, nums):
     """
     Determines the winner of a set of prime number removal games.
 
@@ -66,7 +66,3 @@ def generate_prime_sieve(n):
                 sieve[j] = 0  # Mark multiples of i as non-prime
 
     return sieve
-
-
-# Example usage
-print("Winner: ", is_winner(5, [2, 5, 1, 4, 3]))
