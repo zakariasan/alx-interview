@@ -47,6 +47,3 @@ def generate_prime_sieve(n):
                 sieve[j] = 0
 
     return sieve
-
-
-print("Winner:", is_winner(5, [2, 5, 1, 4, 3]))
