@@ -2,7 +2,7 @@
 """ Make change for a given amount using specified coin denominations """
 
 
-def make_change(coin_denominations, target_amount):
+def makeChange(coin_denominations, target_amount):
     """
     Calculate the minimum number of coins needed to make up a given amount.
 
@@ -11,7 +11,7 @@ def make_change(coin_denominations, target_amount):
         target_amount (int): Total amount needed.
 
     Returns:
-        int: Minimum number of coins needed, or -1 if the target amount
+        int: Minimum number of coins needed, or -1 if the target
     """
     if target_amount <= 0:
         return 0
@@ -29,3 +29,4 @@ def make_change(coin_denominations, target_amount):
         remaining_amount -= count * coin
 
     return num_coins if remaining_amount == 0 else -1
+
