@@ -1,24 +1,31 @@
 #!/usr/bin/python3
-""" make me happy """
+""" Make change for a given amount using specified coin denominations """
 
 
-def makeChange(coin_denominations, target_amount):
+def make_change(coin_denominations, target_amount):
     """
-        coin_denominations (List[int]): List of coin denominations available
-        target_amount (int): Total amount needed
+    Calculate the minimum number of coins needed to make up a given amount.
+
+    Args:
+        coin_denominations (List[int]): List of available coin denominations.
+        target_amount (int): Total amount needed.
+
+    Returns:
+        int: Minimum number of coins needed, or -1 if the target amount
     """
     if target_amount <= 0:
         return 0
 
-    min_coins = [float('inf')] * (target_amount + 1)
-    min_coins[0] = 0
+    num_coins = 0
+    remaining_amount = target_amount
 
-    # Fill the DP array
+    coin_denominations.sort(reverse=True)
+
     for coin in coin_denominations:
-        for amount in range(coin, target_amount + 1):
-            if min_coins[amount - coin] != float('inf'):
-                min_coins[amount] = min(
-                    min_coins[amount], min_coins[amount - coin] + 1)
+        if remaining_amount == 0:
+            break
+        count = remaining_amount // coin
+        num_coins += count
+        remaining_amount -= count * coin
 
-    result = min_coins[target_amount]
-    return result if result != float('inf') else -1
+    return num_coins if remaining_amount == 0 else -1
