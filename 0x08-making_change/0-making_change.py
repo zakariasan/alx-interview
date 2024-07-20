@@ -29,4 +29,3 @@ def makeChange(coin_denominations, target_amount):
         remaining_amount -= count * coin
 
     return num_coins if remaining_amount == 0 else -1
-
